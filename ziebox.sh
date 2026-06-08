@@ -1,5 +1,5 @@
 #!/system/bin/sh
-LOCAL_DIR="/data/local/home/zie"
+LOCAL_DIR="/path/to/files/zie"
 MOUNT_DIR="/data/media/0/.local/zie"
 SWITCH_FILE="/data/media/0/.local/status.txt"
 
