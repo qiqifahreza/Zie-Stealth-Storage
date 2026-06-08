@@ -3,35 +3,35 @@ LOCAL_DIR="/data/local/home/zie"
 MOUNT_DIR="/data/media/0/.local/zie"
 SWITCH_FILE="/data/media/0/.local/status.txt"
 
-# Pastikan folder fisik & gerbangnya siap
+# Vertify Directory is Already
 mkdir -p "$LOCAL_DIR"
 mkdir -p "$MOUNT_DIR"
 
-# 🔍 Intip langsung ke tabel kernel /proc/mounts
+# look /proc/mounts
 if grep -q "$MOUNT_DIR" /proc/mounts; then
-    # JIKA TERDETEKSI DI KERNEL -> TUTUP INSTAN
+    # closed instant if already in kernel mount
     umount -f -l "$MOUNT_DIR" 2>/dev/null
     
-    # 📝 Update status file menjadi OFF
+    # Update status OFF
     echo "OFF" > "$SWITCH_FILE"
     chown media_rw:media_rw "$SWITCH_FILE" 2>/dev/null
     chmod 660 "$SWITCH_FILE" 2>/dev/null
     
     echo "======================================"
-    echo "🔒 BRANKAS ZIE BERHASIL DIKUNCI!"
+    echo "🔒 Zie-Stealth-Storage is Locked!"
     echo "======================================"
 else
-    # JIKA BERSIH DI KERNEL -> BUKA INSTAN
+    # Open instant if cleaned in kernel mount
     mount --bind "$LOCAL_DIR" "$MOUNT_DIR"
     chown -R media_rw:media_rw "$MOUNT_DIR"
     chmod -R 2770 "$MOUNT_DIR"
     
-    # 📝 Update status file menjadi ON
+    # Update status ON
     echo "ON" > "$SWITCH_FILE"
     chown media_rw:media_rw "$SWITCH_FILE" 2>/dev/null
     chmod 660 "$SWITCH_FILE" 2>/dev/null
     
     echo "======================================"
-    echo "🔓 BRANKAS ZIE TERBUKA & ABU-ABU!"
+    echo "Zie-Stealth-Storage is Opened!"
     echo "======================================"
 fi
