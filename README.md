@@ -13,8 +13,8 @@ Before running the main script, ensure the parent directory and the flag switch 
 mkdir -p /path/to/files/zie
 
 # Set strict access rights for security
-chown -R media_rw:media_rw /data/local/home/zie
-chmod -R 2770 /data/local/home/zie
+chown -R media_rw:media_rw /path/to/files/zie
+chmod -R 2770 /path/to/files/zie
 
 # Create a gateway directory (mountpoint) on internal storage
 mkdir -p /data/media/0/.local/zie
@@ -24,9 +24,12 @@ echo "OFF" > /data/media/0/.local/status.txt
 chown media_rw:media_rw /data/media/0/.local/status.txt
 chmod 660 /data/media/0/.local/status.txt
 ```
+
 ## 📜 2. Main Script Setup (ziebox.sh)
 
 This script intelligently looks directly at the kernel's /proc/mounts table to accurately detect mount status. This has proven effective in preventing duplicate bind mounts.
+
+⚠️ IMPORTANT: If you are customizing the paths, make sure to change the LOCAL_DIR value inside the script to match your actual vault location (/path/to/files/zie), and save the script file as /path/to/scripts/ziebox.sh.
 
 scripts is here: [ziebox.sh](https://github.com/qiqifahreza/Zie-Stealth-Storage/blob/main/ziebox.sh)
 
@@ -35,6 +38,7 @@ scripts is here: [ziebox.sh](https://github.com/qiqifahreza/Zie-Stealth-Storage/
 ```bash
 chmod +x /path/to/scripts/ziebox.sh
 ```
+
 ## 🚀 3. Alias ​​Configuration Options (Optional)
 
 ### A. for MKSH / Android Default (.mkshrc)
@@ -50,9 +54,12 @@ alias zie="sh /path/to/scripts/ziebox.sh"
 If you prefer to control your vault via Termux without wanting to manually enter the su shell first, paste this line into Termux's ~/.bashrc or ~/.zshrc file:
 
 ```bash
-alias zieswitch="su -c '/path/to//scripts/ziebox.sh'"
+alias zieswitch="su -c '/path/to/scripts/ziebox.sh'"
 alias ziestats="su -c 'cat /sdcard/.local/status.txt'"
 ```
+
+- **`zieswitch`** : Effortlessly toggle your stealth vault with just a single word command.
+- **`ziestats`** : Instantly peek at the actual vault status (`ON` / `OFF`) directly on your terminal screen.
 
 ## 💎 Advantages of this method:
 
