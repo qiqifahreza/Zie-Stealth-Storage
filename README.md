@@ -1,68 +1,78 @@
 # 🔒 Zie Stealth Storage v4.0
 
-Complete documentation for creating, configuring, and automating an Isolated Stealth Storage on Modern Android using On-Demand Script. This solution is secure, very lightweight, and free from kernel panic/freeze issues.
+An elegant, robust, and highly automated solution for creating an On-Demand Isolated Stealth Storage on Modern Android. Fully integrated as a flashable Magisk/KernelSU/APatch module featuring an interactive Manager Root UI switch.
+
+This project bypasses the Android storage daemon (`vold`) constraints, successfully preventing duplicate mounts, memory deadlocks, and kernel freeze issues while maintaining strict file permission ownership.
 
 ---
 
-## 🛠️ 1. Initial File & Directory Preparation
+## 💎 Features & Advantages
 
-Before running the main script, ensure the parent directory and the flag switch file have been created. This step must be executed directly from the root terminal (`su`):
+* **Zero Background Process**: The script is execution-triggered only, consuming 0% RAM and battery resources in standby.
+* **No Kernel Panic**: Clean bind mounts directly visible across namespaces without hanging up the system UI.
+* **Dynamic Module UI**: The description status inside your Magisk/KernelSU Manager changes dynamically `[STATUS: 🔓 OPENED]` or `[STATUS: 🔒 LOCKED]` in real-time.
+* **Scoped Storage Bypass**: Seamless access inside modern Android File Managers (like ZArchiver) via synchronized FUSE forced-remounts.
 
-```bash
-# Create an isolated physical directory in the pure root zone
-mkdir -p /path/to/files/zie
+---
 
-# Set strict access rights for security
-chown -R media_rw:media_rw /path/to/files/zie
-chmod -R 2770 /path/to/files/zie
+## 📂 Module Directory Structure
 
-# Create a gateway directory (mountpoint) on internal storage
-mkdir -p /data/media/0/.local/zie
-
-# Creates an initial status marker file (default: OFF)
-echo "OFF" > /data/media/0/.local/status.txt
-chown media_rw:media_rw /data/media/0/.local/status.txt
-chmod 660 /data/media/0/.local/status.txt
+When packaged as a flashable zip file, the structure inside is as follows:
+```text
+Zie_Stealth_Storage.zip
+├── module.prop      # Core module identification & live description
+├── customize.sh     # Installation script (deploys ziebox to /data/local)
+├── action.sh        # Physical action button bridge for Manager Root
+├── uninstall.sh     # Clean-up script upon module removal
+└── ziebox.sh        # The monolithic script handling all core mount & UI logic
 ```
 
-## 📜 2. Main Script Setup (ziebox.sh)
+## 🛠️ Installation & Setup
 
-This script intelligently looks directly at the kernel's /proc/mounts table to accurately detect mount status. This has proven effective in preventing duplicate bind mounts.
+1. Compress all the module files into a single .zip archive.
+2. Flash the zip file via Magisk, KernelSU, or APatch manager.
+3. Reboot your device to let the system initialize the basic paths.
 
-⚠️ IMPORTANT: If you are customizing the paths, make sure to change the LOCAL_DIR value inside the script to match your actual vault location (/path/to/files/zie), and save the script file as /path/to/scripts/ziebox.sh.
+[ !NOTE ]
+The installation process via customize.sh will automatically deploy the core binary to /data/local/scripts/ziebox.sh and create the core vault directory structure at /data/local/box/zie automatically.
 
-You can see the script [ziebox.sh](https://github.com/qiqifahreza/Zie-Stealth-Storage/blob/main/ziebox.sh)
+## 🚀 How To Use
 
-### Granting execution permission
+You have two powerful methods to control and toggle your isolated stealth vault:
 
-```bash
-chmod +x /path/to/scripts/ziebox.sh
-```
+### Method A: Interactive UI Button (Recommended)
 
-## 🚀 3. Alias ​​Configuration Options (Optional)
+1. Open your Magisk / KernelSU / APatch app.
+2. Go to the Modules tab and locate Zie Stealth Storage.
+3. Tap the "Action" or "WebUI" button.
+4. The terminal output will instantly prompt the status, and the module description will reflect the state with dynamic emojis (🔒 LOCKED / 🔓 OPENED).
 
-### A. for MKSH / Android Default (.mkshrc)
+### Method B: Terminal Aliases (Optional Automation) For Termux Users (User Area)
 
-If accessing directly from a local Android terminal, open the shell configuration file (e.g. /system/etc/.mkshrc) and add this line at the very bottom:
-
-```bash
-alias zie="sh /path/to/scripts/ziebox.sh"
-```
-
-### B. For Termux (User Area)
-
-If you prefer to control your vault via Termux without wanting to manually enter the su shell first, paste this line into Termux's ~/.bashrc or ~/.zshrc file:
+If you prefer triggering your safe storage via Termux without diving into a manual root shell every time, append these configurations to your Termux configuration file (~/.bashrc or ~/.zshrc):
 
 ```bash
-alias zieswitch="su -c '/path/to/scripts/ziebox.sh'"
+alias zieswitch="su -c '/data/local/scripts/ziebox.sh'"
 alias ziestats="su -c 'cat /sdcard/.local/status.txt'"
 ```
 
-- **`zieswitch`** : Effortlessly toggle your stealth vault with just a single word command.
-- **`ziestats`** : Instantly peek at the actual vault status (`ON` / `OFF`) directly on your terminal screen.
+* Execute zieswitch to smoothly toggle your stealth vault back and forth using just one single command word.
+* Execute ziestats to cleanly print out the current flag state (ON / OFF) directly onto your terminal emulator viewport.
 
-## 💎 Advantages of this method:
+### For Default Android Shell (.mkshrc)
 
-1. Light & No Delay: The script is only active for a moment when triggered, otherwise it consumes 0% of RAM or daily battery resources.
-2. Crash Free: Avoids deadlocks in the Android storage daemon (vold) which often causes the phone to suddenly freeze and then reboot itself.
-3. Perfect Gray: Pure ownership sync to media_rw makes the application smoothly read the directory without Permission Denied issues.
+If you access the shell via local adb or integrated terminal setups, you can bind it natively to the system terminal by adding this line at the bottom of /system/etc/.mkshrc:
+
+```bash
+alias zie="sh /data/local/scripts/ziebox.sh"
+```
+
+## ⚠️ Important Security Notes
+
+[ !WARNING ]
+By default, the uninstall.sh script does NOT remove your physical storage at /data/local/box/zie to prevent unintended data loss when updating or re-installing the module. If you wish to wipe everything out completely when uninstalled, uncomment the deletion code inside the module's uninstall.sh manually.
+
+### 👨‍💻 Author & Credits
+
+* **Developer**: [@qiqifahreza](https://github.com/qiqifahreza)
+* **Project Page**: [Zie Stealth Storage Repository](https://github.com/qiqifahreza/Zie-Stealth-Storage.git)
