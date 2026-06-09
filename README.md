@@ -31,7 +31,7 @@ This script intelligently looks directly at the kernel's /proc/mounts table to a
 
 ⚠️ IMPORTANT: If you are customizing the paths, make sure to change the LOCAL_DIR value inside the script to match your actual vault location (/path/to/files/zie), and save the script file as /path/to/scripts/ziebox.sh.
 
-scripts is here: [ziebox.sh](https://github.com/qiqifahreza/Zie-Stealth-Storage/blob/main/ziebox.sh)
+You can see the script [ziebox.sh](https://github.com/qiqifahreza/Zie-Stealth-Storage/blob/main/ziebox.sh)
 
 ### Granting execution permission
 
